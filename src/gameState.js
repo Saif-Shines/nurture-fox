@@ -6,6 +6,7 @@ import {
   NIGHT_LENGTH,
   getNextDieTime,
   getNextHungerTime,
+  getNextPoopTime,
 } from "./constants";
 
 const gameState = {
@@ -15,6 +16,8 @@ const gameState = {
   wakeTime: -1,
   hungryTime: -1,
   dieTime: -1,
+  timeToStartCelebrating: -1,
+  thimeToEndCelebrating: -1,
   tick() {
     this.clock++;
     console.log("clock", this.clock);
@@ -26,6 +29,10 @@ const gameState = {
       this.getHungry();
     } else if (this.clock === this.dieTime) {
       this.die();
+    } else if (this.clock === this.timeToStartCelebrating) {
+      this.startCelebrating();
+    } else if (this.clock === this.timeToEndCelebrating) {
+      this.endCelebrating();
     }
 
     return this.clock;
@@ -85,6 +92,7 @@ const gameState = {
     modScene(SCENES[this.scene]);
     this.sleepTime = this.clock + DAY_LENGTH;
     this.hungryTime = getNextHungerTime(this.clock);
+    this.determineFoxState();
   },
   sleep() {
     this.state = "SLEEP";
@@ -100,6 +108,26 @@ const gameState = {
   },
   die() {
     console.log("lol dead");
+  },
+  startCelebrating() {
+    this.current = "CELEBRATING";
+    modFox("celebrate");
+    this.timeToStartCelebrating = -1;
+    this.thimeToEndCelebrating = this.clock * 2;
+  },
+  endCelebrating() {
+    this.thimeToEndCelebrating = -1;
+    this.current = "IDLING";
+    this.determineFoxState();
+  },
+  determineFoxState() {
+    if (this.current === "IDLING") {
+      if (SCENES[this.scene] === "rain") {
+        modFox("rain");
+      } else {
+        modFox("idling");
+      }
+    }
   },
 };
 
