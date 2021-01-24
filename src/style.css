@@ -95,10 +95,10 @@ body {
   right: 0;
   background-color: blueviolet;
   color: aliceblue;
-  padding:25px;
-  font-size: 20px;
+  padding:10px;
+  font-size: 10px;
   font-weight: bold;
-  border-radius: 12px;
+  border-radius: 8px;
 }
 
 .modal:empty {
