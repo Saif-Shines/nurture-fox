@@ -1,4 +1,4 @@
-import { modFox, modScene, tooglePoopBag } from "./ui";
+import { modFox, modScene, tooglePoopBag, writeModal } from "./ui";
 import {
   RAIN_CHANCE,
   SCENES,
@@ -98,6 +98,7 @@ const gameState = {
     this.wakeTime = this.clock + 3;
     modFox("egg");
     modScene("day");
+    writeModal();
   },
   wake() {
     this.current = "IDLING";
