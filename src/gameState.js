@@ -115,6 +115,17 @@ const gameState = {
     modFox("sleep");
     modScene("night");
     this.wakeTime = this.clock + NIGHT_LENGTH;
+    this.clearTimes();
+    this.wakeTime = this.clock + NIGHT_LENGTH;
+  },
+  clearTimes() {
+    this.wakeTime = -1;
+    this.sleepTime = -1;
+    this.hungryTime = -1;
+    this.dieTime = -1;
+    this.poopTime = -1;
+    this.timeToStartCelebrating = -1;
+    this.timeToEndCelebrating = -1;
   },
   getHungry() {
     this.current = "HUNGRY";
@@ -123,7 +134,11 @@ const gameState = {
     modFox("hungry");
   },
   die() {
-    console.log("lol dead");
+    this.current = "DEAD";
+    modScene("dead");
+    modFox("dead");
+    this.clearTimes();
+    writeModal("The fox died :(");
   },
   startCelebrating() {
     this.current = "CELEBRATING";
