@@ -2,7 +2,7 @@ import { ICONS } from "./constants";
 
 function toggleHighlighted(icon, show) {
   return document
-    .querySelector(`${ICONS[icon]}-icon`)
+    .querySelector(`.${ICONS[icon]}-icon`)
     .classList.toggle("highlighted", show);
 }
 
@@ -17,6 +17,7 @@ export default function initButtons(handleUserAction) {
     } else if (target.classList.contains("right-btn")) {
       toggleHighlighted(selectedIcon, false);
       selectedIcon = (1 + selectedIcon) % ICONS.length;
+      toggleHighlighted(selectedIcon, true);
     } else {
       handleUserAction(ICONS[selectedIcon]);
     }
