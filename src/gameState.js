@@ -1,11 +1,20 @@
 import { modFox, modScene } from "./ui";
-import { RAIN_CHANCE, SCENES, DAY_LENGTH, NIGHT_LENGTH } from "./constants";
+import {
+  RAIN_CHANCE,
+  SCENES,
+  DAY_LENGTH,
+  NIGHT_LENGTH,
+  getNextDieTime,
+  getNextHungerTime,
+} from "./constants";
 
 const gameState = {
   current: "INIT",
   clock: 1,
   sleepTime: -1,
   wakeTime: -1,
+  hungryTime: -1,
+  dieTime: -1,
   tick() {
     this.clock++;
     console.log("clock", this.clock);
@@ -13,7 +22,12 @@ const gameState = {
       this.wake();
     } else if (this.clock === this.sleepTime) {
       this.sleep();
+    } else if (this.clock === this.hungryTime) {
+      this.getHungry();
+    } else if (this.clock === this.dieTime) {
+      this.die();
     }
+
     return this.clock;
   },
   handleUserAction(icon) {
@@ -47,7 +61,15 @@ const gameState = {
     console.log("clean up poop");
   },
   feed() {
-    console.log("feed");
+    if (this.current !== "HUNGRY") {
+      return;
+    }
+
+    this.current = "FEEDING";
+    this.dieTime = -1;
+    this.poopTime = getNextPoopTime(this.clock);
+    modFox("eating");
+    this.timeToStartCelebrating = this.clock + 2;
   },
   startGame() {
     this.current = "HATCHING";
@@ -62,12 +84,22 @@ const gameState = {
     this.scene = Math.random() > RAIN_CHANCE ? 0 : 1;
     modScene(SCENES[this.scene]);
     this.sleepTime = this.clock + DAY_LENGTH;
+    this.hungryTime = getNextHungerTime(this.clock);
   },
   sleep() {
     this.state = "SLEEP";
     modFox("sleep");
     modScene("night");
     this.wakeTime = this.clock + NIGHT_LENGTH;
+  },
+  getHungry() {
+    this.current = "HUNGRY";
+    this.dieTime = getNextHungerTime(this.clock);
+    this.hungryTime = -1;
+    modFox("hungry");
+  },
+  die() {
+    console.log("lol dead");
   },
 };
 
